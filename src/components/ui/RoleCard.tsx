@@ -12,9 +12,10 @@ const RoleCard: React.FC<RoleCardProps> = ({ icon, label, selected, onClick }) =
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={selected}
       className={`
         w-full flex items-center justify-between
-        px-5 py-4 rounded-2xl bg-white border-2
+        px-5 py-[22px] rounded-2xl bg-white border-2
         transition-all duration-150 text-left cursor-pointer select-none
         focus:outline-none focus:ring-2 focus:ring-blue/20 active:scale-[0.99]
         ${selected ? 'border-blue' : 'border-border-default hover:border-blue-light'}
@@ -29,8 +30,12 @@ const RoleCard: React.FC<RoleCardProps> = ({ icon, label, selected, onClick }) =
         </span>
       </div>
 
-      <span className={`transition-all duration-200 ${selected ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}>
-        <img src="/assets/check-circle.svg" alt="Selected" width={22} height={22} />
+      {/* opacity + scale animate together so the checkmark "pops" in */}
+      <span
+        aria-hidden="true"
+        className={`transition-all duration-200 ${selected ? 'opacity-100 scale-100' : 'opacity-0 scale-75'}`}
+      >
+        <img src="/assets/check-circle.svg" alt="" width={22} height={22} />
       </span>
     </button>
   )
