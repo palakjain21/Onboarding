@@ -4,7 +4,7 @@ A pixel-perfect implementation of a 6-step account onboarding flow built from a 
 
 ## Live Demo
 
-> Deploy URL will appear here after deployment.
+**https://onboarding-flow-lake.vercel.app**
 
 ## Tech Stack
 
