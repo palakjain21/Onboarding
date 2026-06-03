@@ -37,10 +37,10 @@ const NameStep: React.FC<Props> = ({ data, errors, isLoading, onNext, onBack, up
       </div>
 
       <div className="flex items-center justify-between gap-4 mt-12">
-        <Button variant="secondary" onClick={onBack} className="flex-1">
+        <Button variant="secondary" onClick={onBack}>
           Back
         </Button>
-        <Button onClick={onNext} isLoading={isLoading} className="flex-1">
+        <Button onClick={onNext} isLoading={isLoading}>
           Continue
         </Button>
       </div>

@@ -37,7 +37,7 @@ const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, error }) => {
             flex-1 h-14 px-4
             font-rubik font-normal text-base text-navy
             bg-white border rounded-xl
-            placeholder:text-text-placeholder
+            placeholder:text-text-muted
             outline-none transition-all duration-150
             ${error
               ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'

@@ -16,8 +16,8 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, progress }) => {
           <p className="font-rubik font-light text-2xl text-navy mb-2">
             Let's get started
           </p>
-          <h1 className="font-rubik font-bold text-[48px] text-navy leading-tight">
-            Create your<br />account
+          <h1 className="font-rubik font-bold text-[48px] text-navy leading-tight whitespace-nowrap">
+            Create your account
           </h1>
           <p className="font-rubik font-normal text-base text-navy/70 mt-4">
             Follow the steps to create your account
@@ -28,7 +28,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children, progress }) => {
           <img
             src="/assets/illustration.svg"
             alt="Account setup illustration"
-            className="w-full max-w-[460px] object-contain"
+            className="w-full object-contain"
             draggable={false}
           />
         </div>

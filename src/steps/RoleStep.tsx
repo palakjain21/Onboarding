@@ -57,10 +57,10 @@ const RoleStep: React.FC<Props> = ({ data, error, isLoading, onNext, onBack, upd
       )}
 
       <div className="flex items-center justify-between gap-4 mt-12">
-        <Button variant="secondary" onClick={onBack} disabled className="flex-1">
+        <Button variant="secondary" onClick={onBack} disabled>
           Back
         </Button>
-        <Button onClick={onNext} isLoading={isLoading} className="flex-1">
+        <Button onClick={onNext} isLoading={isLoading}>
           Continue
         </Button>
       </div>

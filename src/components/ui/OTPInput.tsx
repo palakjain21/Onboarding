@@ -63,9 +63,9 @@ const OTPInput: React.FC<OTPInputProps> = ({ length = 4, value, onChange }) => {
           onPaste={handlePaste}
           onFocus={e => e.target.select()}
           className={`
-            w-14 h-14 text-center
-            font-rubik font-normal text-base text-navy
-            bg-white border rounded-xl
+            w-[60px] h-[60px] text-center
+            font-rubik font-medium text-xl text-navy
+            bg-white border-2 rounded-xl
             outline-none transition-all duration-150
             ${value[i]
               ? 'border-blue-light ring-2 ring-blue/10'

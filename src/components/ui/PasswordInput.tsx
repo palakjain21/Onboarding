@@ -33,7 +33,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
             w-full h-14 pl-4 pr-12
             font-rubik font-normal text-base text-navy
             bg-white border rounded-xl
-            placeholder:text-text-placeholder
+            placeholder:text-text-muted
             transition-all duration-150 outline-none
             ${error
               ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'

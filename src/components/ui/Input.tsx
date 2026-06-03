@@ -27,7 +27,7 @@ const Input: React.FC<InputProps> = ({ label, hint, error, id, className = '', .
           font-rubik font-normal text-base text-navy
           bg-white
           border rounded-xl
-          placeholder:text-text-placeholder
+          placeholder:text-text-muted
           transition-all duration-150
           outline-none
           ${error
