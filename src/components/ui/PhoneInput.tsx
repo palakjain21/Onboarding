@@ -1,6 +1,7 @@
 import React from 'react'
 import CountrySelect from './CountrySelect'
 import { Country } from '../../types'
+import { getExpectedDigits } from '../../hooks/useCountries'
 
 interface PhoneInputProps {
   value: string
@@ -17,6 +18,8 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
   onCountryChange,
   error,
 }) => {
+  const maxLength = getExpectedDigits(country?.dialCode ?? '+91')
+
   return (
     <div className="flex flex-col gap-1.5 w-full">
       <label className="text-sm font-rubik font-normal" style={{ color: '#8292A1' }}>
@@ -35,7 +38,8 @@ const PhoneInput: React.FC<PhoneInputProps> = ({
           inputMode="numeric"
           placeholder="Enter mobile number"
           value={value}
-          onChange={e => onChange(e.target.value.replace(/\D/g, ''))}
+          onChange={e => onChange(e.target.value.replace(/\D/g, '').slice(0, maxLength))}
+          maxLength={maxLength}
           className="flex-1 px-4 font-rubik font-normal text-base rounded-xl outline-none transition-all duration-150"
           style={{
             height: '76px',

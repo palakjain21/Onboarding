@@ -58,7 +58,7 @@ const SignupPage: React.FC = () => {
 
       case 'phone': {
         const expectedDigits = getExpectedDigits(data.country?.dialCode ?? '+91')
-        if (data.phone.length < expectedDigits) {
+        if (data.phone.length !== expectedDigits) {
           const countryName = data.country?.name ?? 'your country'
           setErrors({ phone: `Please enter a valid ${expectedDigits}-digit number for ${countryName}` })
           return false

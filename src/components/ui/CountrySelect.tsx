@@ -96,6 +96,10 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ value, onChange, hasError
 
   const display = value ?? defaultCountry
 
+  // Widen trigger by 60px when dial code has 3 digits (e.g. +971, +880, +966)
+  const dialDigits = (display?.dialCode?.length ?? 3) - 1 // subtract the leading '+'
+  const triggerWidth = dialDigits >= 3 ? 153 : 93
+
   // Dropdown rendered via portal to escape card's overflow-hidden
   const dropdownPortal = open ? ReactDOM.createPortal(
     <AnimatePresence>
@@ -178,7 +182,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ value, onChange, hasError
         onClick={handleToggle}
         className="flex items-center gap-2 px-3 bg-white rounded-xl select-none transition-all duration-150 focus:outline-none"
         style={{
-          width: '93px',
+          width: `${triggerWidth}px`,
           height: '76px',
           border: hasError
             ? '1px solid #f87171'
