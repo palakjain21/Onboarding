@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { motion } from 'framer-motion'
 import OTPInput from '../components/ui/OTPInput'
 import Button from '../components/ui/Button'
 import { OnboardingData } from '../types'
@@ -16,8 +17,7 @@ interface Props {
 const OTPStep: React.FC<Props> = ({ data, error, isLoading, onNext, onBack, update }) => {
   const { seconds, isRunning, start } = useCountdown(30)
 
-  // Auto-start countdown when this step mounts
-  useEffect(() => { start() }, [])
+  useEffect(() => { start() }, [start])
 
   const handleResend = () => {
     if (isRunning) return
@@ -26,52 +26,63 @@ const OTPStep: React.FC<Props> = ({ data, error, isLoading, onNext, onBack, upda
   }
 
   return (
-    <div className="flex flex-col">
-      <h2 className="font-rubik font-medium text-2xl text-navy mb-2">
-        OTP Verification
-      </h2>
-      <p className="font-rubik font-normal text-xs text-text-muted mb-8">
-        An OTP has been sent to your mobile number
-      </p>
+    <div className="flex flex-col flex-1 justify-between">
 
-      <OTPInput
-        length={4}
-        value={data.otp}
-        onChange={val => update('otp', val)}
-      />
+      <div>
+        <motion.div
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.22 }}
+        >
+          <h2 className="font-rubik font-medium text-2xl text-[#132C4A] mb-1">
+            OTP Verification
+          </h2>
+          <p className="font-rubik font-normal mb-8" style={{ fontSize: '12px', color: 'rgba(130,146,161,1)' }}>
+            An OTP has been sent to your mobile number
+          </p>
+        </motion.div>
 
-      {error && (
-        <p className="text-xs font-rubik text-red-500 mt-3">{error}</p>
-      )}
+        <OTPInput
+          length={4}
+          value={data.otp}
+          onChange={val => update('otp', val)}
+        />
 
-      <div className="mt-4">
-        {isRunning ? (
-          <span className="font-rubik font-medium text-sm text-text-muted">
+        {error && (
+          <p className="text-xs font-rubik text-red-500 mt-3">{error}</p>
+        )}
+
+        <div className="mt-5 flex items-center">
+          <span className="font-rubik font-normal text-sm" style={{ color: 'rgba(19, 44, 74, 1)' }}>
             Did not receive OTP?{' '}
-            <span className="text-blue/40">Resend OTP ({seconds}s)</span>
           </span>
-        ) : (
-          <span className="font-rubik font-medium text-sm text-text-muted">
-            Did not receive OTP?{' '}
+          {isRunning ? (
+            <span className="font-rubik font-normal text-sm ml-1" style={{ color: 'rgba(0,84,253,0.4)' }}>
+              Resend OTP ({seconds}s)
+            </span>
+          ) : (
             <button
               type="button"
               onClick={handleResend}
-              className="text-blue underline underline-offset-2 hover:opacity-75 transition-opacity focus:outline-none"
+              className="font-rubik font-semibold text-sm ml-1 underline underline-offset-2 hover:opacity-75 transition-opacity focus:outline-none"
+              style={{ color: 'rgba(0,84,253,1)' }}
             >
               Resend OTP
             </button>
-          </span>
-        )}
+          )}
+        </div>
       </div>
 
-      <div className="flex items-center justify-between gap-4 mt-12">
-        <Button variant="secondary" onClick={onBack}>
+      {/* Action buttons */}
+      <div className="flex items-center gap-4">
+        <Button variant="secondary" onClick={onBack} className="flex-1">
           Back
         </Button>
-        <Button onClick={onNext} isLoading={isLoading}>
+        <Button onClick={onNext} isLoading={isLoading} className="flex-1">
           Continue
         </Button>
       </div>
+
     </div>
   )
 }

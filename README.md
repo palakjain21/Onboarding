@@ -1,73 +1,181 @@
-# Onboarding Flow — React + TypeScript
+# Onboarding Flow
 
-A pixel-perfect implementation of a 6-step account onboarding flow built from a Figma design.
+A 6-step account onboarding flow built with React and TypeScript.
 
-## Live Demo
+### Live Demo
 
 **https://onboarding-flow-lake.vercel.app**
 
+---
+
 ## Tech Stack
 
-- **React 18** + **TypeScript** — component logic and type safety
-- **Vite** — fast dev server and build tooling
-- **Tailwind CSS v3** — utility-first styling with custom design tokens
-- **Framer Motion** — step transitions and success modal spring animation
-- **React Router v6** — single catch-all route (`/*`) with all steps managed in state
+* React 18 + TypeScript
+* Vite
+* Tailwind CSS v3
+* Framer Motion
+* React Router v6
 
-## Features
+---
 
-- 6-step onboarding: Role → Phone → OTP → Name → Password → Success
-- Shared `AuthLayout` keeps the left illustration panel mounted — zero re-renders between steps
-- Direction-aware slide transitions (forward = slide left, back = slide right) via `AnimatePresence`
-- Success modal overlays the password step with a spring-in animation and dimmed backdrop
-- Per-step client-side validation without any form library
-- `useCountdown` hook drives the 30-second OTP resend timer
-- All icons are SVG files in `public/assets/` — no inline SVGs, no icon library
-- Accessible role cards with `aria-pressed` and animated checkmark hidden from screen readers
+## Overview
+
+This project uses a single-page onboarding flow where all steps are managed through component state instead of route changes.
+
+The experience includes:
+
+* Account type selection
+* Phone number entry
+* OTP verification
+* Name collection
+* Password creation
+* Success confirmation modal
+
+---
+
+## Architecture
+
+### Single Route Flow
+
+All onboarding steps are controlled inside `SignupPage` using local state. Navigation is handled by updating the active step rather than changing URLs.
+
+### Shared State
+
+A single `OnboardingData` object stores all form data throughout the flow. Each step receives only the fields and update handlers it needs.
+
+### Error Handling
+
+Validation errors are stored in a parallel error object and cleared individually when a user updates a field.
+
+### Layout Structure
+
+The onboarding card uses a consistent flex layout across all steps:
+
+* Form content stays aligned to the top
+* Action buttons stay pinned to the bottom
+* No `margin-top: auto` workarounds
+
+### Progress Bar
+
+The progress indicator sits above the card, matching the Figma design. It's hidden on the account type selection step.
+
+### Success Modal
+
+The success screen appears as a fixed overlay while keeping the password step mounted underneath, allowing smooth modal animations without affecting the page layout.
+
+---
 
 ## Project Structure
 
-```
+```text
 src/
 ├── components/
-│   ├── AuthLayout.tsx        # Shared left-panel + right-card shell
+│   ├── AuthLayout.tsx
 │   └── ui/
-│       ├── Button.tsx        # Primary / secondary variants, loading spinner
-│       ├── Input.tsx         # Text input with label, hint, error states
-│       ├── PasswordInput.tsx # Input + show/hide toggle
-│       ├── PhoneInput.tsx    # Country code prefix + tel input
-│       ├── OTPInput.tsx      # 4-box OTP with auto-advance, backspace nav, paste
-│       ├── ProgressBar.tsx   # Animated fill bar (hidden on role step)
-│       └── RoleCard.tsx      # Selectable card with animated check mark
+│       ├── Button.tsx
+│       ├── Input.tsx
+│       ├── PasswordInput.tsx
+│       ├── PhoneInput.tsx
+│       ├── CountrySelect.tsx
+│       ├── OTPInput.tsx
+│       ├── ProgressBar.tsx
+│       └── RoleCard.tsx
 ├── steps/
-│   ├── RoleStep.tsx          # Account type selection
-│   ├── PhoneStep.tsx         # Mobile number entry
-│   ├── OTPStep.tsx           # OTP verification + resend countdown
-│   ├── NameStep.tsx          # First / last name
-│   ├── PasswordStep.tsx      # Password + confirm with hint text
-│   └── SuccessModal.tsx      # Fixed overlay with account summary
+│   ├── RoleStep.tsx
+│   ├── PhoneStep.tsx
+│   ├── OTPStep.tsx
+│   ├── NameStep.tsx
+│   ├── PasswordStep.tsx
+│   └── SuccessModal.tsx
 ├── pages/
-│   └── SignupPage.tsx        # Orchestrates steps, validation, transitions
+│   └── SignupPage.tsx
 ├── hooks/
-│   └── useCountdown.ts       # Generic countdown hook used by OTPStep
+│   ├── useCountdown.ts
+│   └── useCountries.ts
 └── types/
-    └── index.ts              # OnboardingStep, AccountRole, OnboardingData
+    └── index.ts
 ```
+
+---
+
+## Animations
+
+Framer Motion powers the onboarding experience:
+
+* Smooth step transitions
+* Animated progress bar updates
+* Success modal entrance animations
+* Staggered content reveals
+
+### Step Transitions
+
+Each step is wrapped in `AnimatePresence` and `motion.div`.
+
+Features:
+
+* Forward navigation slides left
+* Back navigation slides right
+* Exit animation completes before the next step enters
+* Smooth 220ms transitions
+
+### Progress Bar
+
+The fill width animates automatically whenever progress changes.
+
+### Success Modal
+
+The modal uses spring animations for:
+
+* Backdrop fade-in
+* Modal entrance
+* Checkmark pop-in effect
+* Staggered summary rows
+
+---
+
+## Notable Features
+
+* Direction-aware step transitions
+* OTP auto-advance
+* OTP backspace navigation
+* OTP paste support
+* 30-second resend countdown
+* Per-country phone validation
+* Loading states on submission
+* Email masking in the success modal
+* Searchable country selector
+* Portal-based dropdown rendering
+
+---
 
 ## Design Decisions
 
-**Single-route step machine** — all 6 steps live inside `SignupPage` state rather than separate routes. This avoids URL-based navigation concerns and keeps the shared left panel perfectly stable across transitions.
+### No Form Library
 
-**No form library / no validation library** — validation is a plain `switch` in `SignupPage.validate()`, one case per step. For a flow this size the overhead of `react-hook-form` + `zod` is unnecessary.
+Validation is handled with simple step-based logic inside `SignupPage`. For a small onboarding flow, introducing a form library would add unnecessary complexity.
 
-**Two SVG files per icon** (e.g. `person.svg` / `person-blue.svg`) — because `<img>` tags can't inherit CSS `currentColor`, each icon ships a gray and a blue variant. The correct one is swapped in via a ternary on the `selected` prop.
+### Portal-Based Country Dropdown
 
-**Success modal as overlay** — the Figma design shows the password step dimmed behind the success card. Achieved by keeping `step === 'success'` rendering `activeStep = 'password'` so PasswordStep stays mounted, while `SuccessModal` renders in a separate `AnimatePresence` as a `fixed` overlay.
+The country selector renders through a React Portal to avoid clipping issues caused by the card's rounded corners and overflow settings.
+
+### Stable Layout
+
+The left illustration panel remains mounted throughout the flow, preventing flickers and unnecessary re-renders during navigation.
+
+### Custom Brand Colors
+
+Brand colors are applied using explicit hex values to ensure consistency across components and avoid Tailwind configuration edge cases.
+
+---
 
 ## Getting Started
 
 ```bash
 npm install
-npm run dev        # http://localhost:5174
-npm run build      # production build → dist/
+
+npm run dev
+# http://localhost:5174
+
+npm run build
+# production build -> dist/
 ```

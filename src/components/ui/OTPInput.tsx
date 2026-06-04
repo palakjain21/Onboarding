@@ -1,4 +1,5 @@
 import React, { useRef, KeyboardEvent, ClipboardEvent } from 'react'
+import { motion } from 'framer-motion'
 
 interface OTPInputProps {
   length?: number
@@ -25,9 +26,7 @@ const OTPInput: React.FC<OTPInputProps> = ({ length = 4, value, onChange }) => {
   const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Backspace') {
       if (value[index]) {
-        const next = [...value]
-        next[index] = ''
-        onChange(next)
+        const next = [...value]; next[index] = ''; onChange(next)
       } else if (index > 0) {
         focus(index - 1)
       }
@@ -41,39 +40,47 @@ const OTPInput: React.FC<OTPInputProps> = ({ length = 4, value, onChange }) => {
   const handlePaste = (e: ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault()
     const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length)
-    const next = [...value]
+    const next = Array(length).fill('')
     for (let i = 0; i < pasted.length; i++) next[i] = pasted[i]
     onChange(next)
-    const lastFilled = Math.min(pasted.length, length - 1)
-    focus(lastFilled)
+    focus(Math.min(pasted.length, length - 1))
   }
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-[57px]">
       {Array.from({ length }).map((_, i) => (
-        <input
+        <motion.div
           key={i}
-          ref={el => { inputsRef.current[i] = el }}
-          type="text"
-          inputMode="numeric"
-          maxLength={1}
-          value={value[i] ?? ''}
-          onChange={e => handleChange(i, e.target.value)}
-          onKeyDown={e => handleKeyDown(i, e)}
-          onPaste={handlePaste}
-          onFocus={e => e.target.select()}
-          className={`
-            w-[60px] h-[60px] text-center
-            font-rubik font-medium text-xl text-navy
-            bg-white border-2 rounded-xl
-            outline-none transition-all duration-150
-            ${value[i]
-              ? 'border-blue-light ring-2 ring-blue/10'
-              : 'border-border-default focus:border-blue-light focus:ring-2 focus:ring-blue/10'
-            }
-          `}
-          aria-label={`OTP digit ${i + 1}`}
-        />
+          animate={value[i] ? { scale: [1, 1.06, 1] } : {}}
+          transition={{ duration: 0.18 }}
+        >
+          <input
+            ref={el => { inputsRef.current[i] = el }}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={value[i] ?? ''}
+            onChange={e => handleChange(i, e.target.value)}
+            onKeyDown={e => handleKeyDown(i, e)}
+            onPaste={handlePaste}
+            onFocus={e => e.target.select()}
+            className={`
+              w-[70px] h-[70px] text-center
+              font-rubik 
+              ${value[i] ? 'font-normal': 'font-semibold'}
+              ${value[i] ? 'text-2xl' : 'text-xl'}
+              ${value[i] ? 'rgba(19, 44, 74, 1)' : 'text-[#D9E0E6]'}
+
+              bg-white border rounded-xl
+              outline-none transition-all duration-150
+              ${value[i]
+                ? 'border-[#0054FD] ring-2 ring-[#0054FD]/10'
+                : 'border-[#729CF0] focus:border-[#0054FD] focus:ring-2 focus:ring-[#0054FD]/10'
+              }
+            `}
+            aria-label={`OTP digit ${i + 1}`}
+          />
+        </motion.div>
       ))}
     </div>
   )

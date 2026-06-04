@@ -12,7 +12,7 @@ export default {
       },
       colors: {
         navy:      '#132C4A',
-        blue:      '#0054FD',
+        blue:      { DEFAULT: '#0054FD' },
         'blue-light': '#729CF0',
         'blue-border': '#4B59D5',
         'bg-page':  '#F6F7F9',

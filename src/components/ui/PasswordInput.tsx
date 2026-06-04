@@ -20,7 +20,11 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
   return (
     <div className="flex flex-col gap-1 w-full">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-rubik font-normal text-text-muted">
+        <label
+          htmlFor={inputId}
+          className="font-rubik font-normal"
+          style={{ fontSize: '18px', color: 'rgba(130,146,161,1)' }}
+        >
           {label}
         </label>
       )}
@@ -31,9 +35,9 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
           type={show ? 'text' : 'password'}
           className={`
             w-full h-14 pl-4 pr-12
-            font-rubik font-normal text-base text-navy
+            font-rubik font-normal text-base text-[#132C4A]
             bg-white border rounded-xl
-            placeholder:text-text-muted
+            placeholder:text-[#D9E0E6] placeholder:font-normal
             transition-all duration-150 outline-none
             ${error
               ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'
@@ -60,7 +64,7 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
       </div>
 
       {hint && !error && (
-        <p className="text-xs font-rubik text-text-muted mt-0.5">{hint}</p>
+        <p className="font-rubik mt-0.5" style={{ fontSize: '16px', color: 'rgba(130, 146, 161, 1)', fontWeight: 400 }}>{hint}</p>
       )}
       {error && (
         <p className="text-xs font-rubik text-red-500 mt-0.5">{error}</p>

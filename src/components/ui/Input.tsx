@@ -14,7 +14,8 @@ const Input: React.FC<InputProps> = ({ label, hint, error, id, className = '', .
       {label && (
         <label
           htmlFor={inputId}
-          className="text-sm font-rubik font-normal text-text-muted"
+          className="font-rubik font-normal"
+          style={{ fontSize: '18px', color: 'rgba(130,146,161,1)' }}
         >
           {label}
         </label>
@@ -24,10 +25,10 @@ const Input: React.FC<InputProps> = ({ label, hint, error, id, className = '', .
         id={inputId}
         className={`
           w-full h-14 px-4
-          font-rubik font-normal text-base text-navy
+          font-rubik font-normal text-base text-[#132C4A]
           bg-white
           border rounded-xl
-          placeholder:text-text-muted
+          placeholder:text-[#D9E0E6] placeholder:font-normal
           transition-all duration-150
           outline-none
           ${error

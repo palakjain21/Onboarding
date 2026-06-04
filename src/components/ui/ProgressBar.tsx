@@ -1,18 +1,32 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 
 interface ProgressBarProps {
-  progress: number
+  progress: number  // 0–1
 }
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ progress }) => {
-  const progressWidth = Math.min(1, Math.max(0, progress)) * 100
+  const pct = Math.min(1, Math.max(0, progress)) * 100
 
   return (
-    <div className="w-full h-[5px] rounded-full overflow-hidden" style={{ background: 'rgba(0,84,253,0.15)' }}>
+    <div className="w-full px-[45px] py-4">
       <div
-        className="h-full rounded-full bg-blue transition-all duration-500 ease-out"
-        style={{ width: `${progressWidth}%` }}
-      />
+        style={{
+          height: '6px',
+          borderRadius: '999px',
+          overflow: 'hidden',
+          background: 'rgba(0,84,253,0.10)',
+          outline: '1px solid rgba(0,84,253,0.18)',
+          outlineOffset: '-1px',
+        }}
+      >
+        <motion.div
+          style={{ background: '#0054FD', height: '100%' }}
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.45, ease: [0.4, 0, 0.2, 1] }}
+        />
+      </div>
     </div>
   )
 }

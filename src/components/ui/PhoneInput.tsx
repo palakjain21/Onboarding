@@ -1,31 +1,34 @@
 import React from 'react'
+import CountrySelect from './CountrySelect'
+import { Country } from '../../types'
 
 interface PhoneInputProps {
   value: string
   onChange: (val: string) => void
+  country: Country | null
+  onCountryChange: (country: Country) => void
   error?: string
 }
 
-const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, error }) => {
+const PhoneInput: React.FC<PhoneInputProps> = ({
+  value,
+  onChange,
+  country,
+  onCountryChange,
+  error,
+}) => {
   return (
-    <div className="flex flex-col gap-1 w-full">
-      <label className="text-sm font-rubik text-text-muted">
-        Mobile Number<span className="text-red-400">*</span>
+    <div className="flex flex-col gap-1.5 w-full">
+      <label className="text-sm font-rubik font-normal" style={{ color: '#8292A1' }}>
+        Mobile Number<span style={{ color: '#FF7C52' }}>*</span>
       </label>
 
       <div className="flex gap-3">
-        <div
-          className={`
-            flex items-center gap-2 px-3 h-14 min-w-[90px]
-            bg-white border rounded-xl select-none
-            transition-all duration-150
-            ${error ? 'border-red-400' : 'border-blue-light'}
-          `}
-        >
-          <span className="text-base leading-none">🇺🇸</span>
-          <span className="font-rubik text-base text-text-muted">+1</span>
-          <img src="/assets/chevron-down.svg" alt="" width={12} height={12} />
-        </div>
+        <CountrySelect
+          value={country}
+          onChange={onCountryChange}
+          hasError={!!error}
+        />
 
         <input
           type="tel"
@@ -33,17 +36,20 @@ const PhoneInput: React.FC<PhoneInputProps> = ({ value, onChange, error }) => {
           placeholder="Enter mobile number"
           value={value}
           onChange={e => onChange(e.target.value.replace(/\D/g, ''))}
-          className={`
-            flex-1 h-14 px-4
-            font-rubik font-normal text-base text-navy
-            bg-white border rounded-xl
-            placeholder:text-text-muted
-            outline-none transition-all duration-150
-            ${error
-              ? 'border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100'
-              : 'border-blue-light focus:border-blue focus:ring-2 focus:ring-blue/10'
-            }
-          `}
+          className="flex-1 px-4 font-rubik font-normal text-base rounded-xl outline-none transition-all duration-150"
+          style={{
+            height: '76px',
+            color: value ? '#132C4A' : '#8292A1',
+            border: error
+              ? '1px solid #f87171'
+              : '1px solid #729CF0',
+          }}
+          onFocus={e => {
+            if (!error) e.currentTarget.style.borderColor = '#0054FD'
+          }}
+          onBlur={e => {
+            if (!error) e.currentTarget.style.borderColor = '#729CF0'
+          }}
         />
       </div>
 

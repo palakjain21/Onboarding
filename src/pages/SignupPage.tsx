@@ -8,14 +8,15 @@ import NameStep from '../steps/NameStep'
 import PasswordStep from '../steps/PasswordStep'
 import SuccessModal from '../steps/SuccessModal'
 import { OnboardingStep, OnboardingData } from '../types'
+import { getExpectedDigits } from '../hooks/useCountries'
 
 const STEPS: OnboardingStep[] = ['role', 'phone', 'otp', 'name', 'password', 'success']
 
 const PROGRESS: Record<OnboardingStep, number | undefined> = {
   role:     undefined,
-  phone:    0.20,
-  otp:      0.40,
-  name:     0.65,
+  phone:    0.25,
+  otp:      0.50,
+  name:     0.75,
   password: 1.0,
   success:  1.0,
 }
@@ -27,17 +28,18 @@ const variants = {
 }
 
 const SignupPage: React.FC = () => {
-  const [step, setStep]       = useState<OnboardingStep>('role')
-  const [direction, setDir]   = useState(1)
+  const [step, setStep]         = useState<OnboardingStep>('role')
+  const [direction, setDir]     = useState(1)
   const [isLoading, setLoading] = useState(false)
 
   const [data, setData] = useState<OnboardingData>({
-    role: null,
-    phone: '',
-    otp: Array(4).fill(''),
-    firstName: '',
-    lastName: '',
-    password: '',
+    role:            'personal',
+    phone:           '',
+    country:         null,
+    otp:             Array(4).fill(''),
+    firstName:       '',
+    lastName:        '',
+    password:        '',
     confirmPassword: '',
   })
 
@@ -48,28 +50,46 @@ const SignupPage: React.FC = () => {
     setErrors(prev => ({ ...prev, [key]: undefined }))
   }
 
-  // Returns true when the current step's fields are valid
   const validate = (): boolean => {
     switch (step) {
       case 'role':
         if (!data.role) { setErrors({ role: 'Please select an account type' }); return false }
         return true
-      case 'phone':
-        if (data.phone.length < 10) { setErrors({ phone: 'Please enter a valid 10-digit mobile number' }); return false }
+
+      case 'phone': {
+        const expectedDigits = getExpectedDigits(data.country?.dialCode ?? '+91')
+        if (data.phone.length < expectedDigits) {
+          const countryName = data.country?.name ?? 'your country'
+          setErrors({ phone: `Please enter a valid ${expectedDigits}-digit number for ${countryName}` })
+          return false
+        }
         return true
+      }
+
       case 'otp':
         if (data.otp.some(d => !d)) { setErrors({ otp: 'Please enter the complete OTP' }); return false }
         return true
-      case 'name':
-        if (!data.firstName.trim()) { setErrors({ firstName: 'First name is required' }); return false }
-        return true
-      case 'password': {
+
+      case 'name': {
         const errs: typeof errors = {}
-        if (data.password.length < 6) errs.password = 'Must be at least 6 characters'
-        if (data.confirmPassword && data.password !== data.confirmPassword) errs.confirmPassword = 'Passwords do not match'
+        const alphaOnly = /^[a-zA-Z\s]+$/
+        if (!data.firstName.trim()) errs.firstName = 'First name is required'
+        else if (!alphaOnly.test(data.firstName.trim())) errs.firstName = 'Only alphabets are allowed'
+        if (data.lastName.trim() && !alphaOnly.test(data.lastName.trim())) errs.lastName = 'Only alphabets are allowed'
         if (Object.keys(errs).length) { setErrors(errs); return false }
         return true
       }
+
+      case 'password': {
+        const errs: typeof errors = {}
+        if (data.password.length < 6) errs.password = 'Must be at least 6 characters'
+        if (!data.confirmPassword || data.password !== data.confirmPassword) {
+          errs.confirmPassword = data.confirmPassword ? 'Passwords do not match' : 'Please confirm your password'
+        }
+        if (Object.keys(errs).length) { setErrors(errs); return false }
+        return true
+      }
+
       default:
         return true
     }
@@ -81,7 +101,6 @@ const SignupPage: React.FC = () => {
     // Simulate async (OTP send, verification, etc.)
     setTimeout(() => {
       setLoading(false)
-      setDir(1)
       const idx = STEPS.indexOf(step)
       if (idx < STEPS.length - 1) setStep(STEPS[idx + 1])
     }, 700)
@@ -96,7 +115,7 @@ const SignupPage: React.FC = () => {
 
   const stepProps = { data, errors, isLoading, onNext: goNext, onBack: goBack, update }
 
-  // The success modal overlays the password step, so we keep 'password' rendered underneath
+  // Success modal overlays the password step — keep 'password' mounted underneath
   const activeStep = step === 'success' ? 'password' : step
 
   return (
@@ -110,10 +129,11 @@ const SignupPage: React.FC = () => {
           animate="center"
           exit="exit"
           transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+          className="flex flex-col flex-1"
         >
           {activeStep === 'role'     && <RoleStep     {...stepProps} error={errors.role} />}
           {activeStep === 'phone'    && <PhoneStep    {...stepProps} error={errors.phone} />}
-          {activeStep === 'otp'      && <OTPStep      {...stepProps} error={errors.otp as string | undefined} />}
+          {activeStep === 'otp'      && <OTPStep      {...stepProps} error={errors.otp} />}
           {activeStep === 'name'     && <NameStep     {...stepProps} />}
           {activeStep === 'password' && <PasswordStep {...stepProps} />}
         </motion.div>

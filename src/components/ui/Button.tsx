@@ -15,13 +15,24 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const base =
-    'inline-flex items-center justify-center font-rubik font-medium text-base rounded-full px-10 py-3 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 select-none'
+    'inline-flex items-center justify-center font-rubik font-medium text-base ' +
+    'rounded-full px-10 py-3.5 transition-all duration-150 ' +
+    'focus:outline-none focus:ring-2 focus:ring-offset-2 select-none ' +
+    'active:scale-[0.97]'
 
   const variants = {
     primary:
-      'bg-blue text-white focus:ring-blue hover:bg-blue/90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed',
+      'bg-[#0054FD] text-white ' +
+      'hover:bg-[#0054FD]/90 hover:shadow-md hover:-translate-y-px ' +
+      'active:bg-[#0054FD]/95 active:shadow-sm active:translate-y-0 ' +
+      'focus:ring-[#0054FD] ' +
+      'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none disabled:hover:translate-y-0',
     secondary:
-      'bg-white text-navy border border-border-default focus:ring-blue hover:border-blue-light hover:text-blue active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed',
+      'bg-white text-[#0054FD] border-2 border-[#D9E0E6] ' +
+      'hover:border-[#0054FD] hover:bg-[#0054FD]/[0.04] ' +
+      'active:bg-[#0054FD]/[0.08] active:border-[#0054FD] ' +
+      'focus:ring-[#0054FD] ' +
+      'disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-[#D9E0E6]',
   }
 
   return (
@@ -33,18 +44,15 @@ const Button: React.FC<ButtonProps> = ({
       {isLoading ? (
         <span className="flex items-center gap-2">
           <svg
-            className="animate-spin h-4 w-4"
+            className="animate-spin h-4 w-4 flex-shrink-0"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
           >
             <circle
               className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
+              cx="12" cy="12" r="10"
+              stroke="currentColor" strokeWidth="4"
             />
             <path
               className="opacity-75"
